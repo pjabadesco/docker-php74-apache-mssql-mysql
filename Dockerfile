@@ -1,6 +1,6 @@
 FROM php:7.4-apache-buster
 
-RUN a2enmod rewrite headers
+RUN a2enmod rewrite headers remoteip
 
 # Install the PHP Driver for SQL Server
 RUN apt-get update -yqq \

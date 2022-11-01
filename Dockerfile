@@ -26,6 +26,9 @@ RUN pecl install -f pdo_sqlsrv sqlsrv xdebug \
 RUN pecl install redis \
     && docker-php-ext-enable redis
 
+RUN pecl install mongodb \
+    && docker-php-ext-enable mongodb
+
 RUN docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr \ 
     && docker-php-ext-install gd pdo pdo_mysql pdo_odbc pdo_dblib curl json mysqli opcache zip
 

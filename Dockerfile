@@ -4,8 +4,8 @@ RUN a2enmod rewrite headers remoteip
 
 # Install the PHP Driver for SQL Server
 RUN apt-get update -yqq \
-    && apt-get install -y apt-transport-https gnupg \
-    libcurl4-openssl-dev libedit-dev libsqlite3-dev libssl-dev libxml2-dev zlib1g-dev libpng-dev libmcrypt-dev libpng-dev \
+    && apt-get install -y apt-transport-https gnupg wget \
+    libcurl4-openssl-dev libedit-dev libsqlite3-dev libssl-dev libxml2-dev zlib1g-dev libmcrypt-dev libpng-dev \
     freetds-dev freetds-bin freetds-common libdbd-freetds libsybdb5 libqt5sql5-tds libzip-dev zip unzip \
     && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so \
     && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a \
@@ -16,12 +16,19 @@ RUN apt-get update -yqq \
     && echo "en_US.UTF-8 zh_CN.UTF-8 UTF-8" > /etc/locale.gen \
     && locale-gen
 
+# RUN wget http://www.ijg.org/files/jpegsrc.v9.tar.gz && \
+#     tar xvfz jpegsrc.v9.tar.gz && \
+#     cd jpeg-9 && \
+#     ./configure && \
+#     make && \
+#     make install
+
 RUN sed -i 's/MinProtocol = TLSv1.2/MinProtocol = TLSv1/g' /etc/ssl/openssl.cnf \
     && sed -i 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=1/g' /etc/ssl/openssl.cnf
 
 # Install pdo_sqlsrv and sqlsrv
-RUN pecl install -f pdo_sqlsrv sqlsrv xdebug \
-    && docker-php-ext-enable pdo_sqlsrv sqlsrv xdebug
+RUN pecl install -f pdo_sqlsrv sqlsrv  \
+    && docker-php-ext-enable pdo_sqlsrv sqlsrv 
 
 RUN pecl install redis \
     && docker-php-ext-enable redis
@@ -29,6 +36,8 @@ RUN pecl install redis \
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
 
+RUN apt-get install -y libjpeg-dev
+RUN docker-php-ext-configure gd --enable-gd --with-jpeg
 RUN docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr \ 
     && docker-php-ext-install gd pdo pdo_mysql pdo_odbc pdo_dblib curl json mysqli opcache zip
 

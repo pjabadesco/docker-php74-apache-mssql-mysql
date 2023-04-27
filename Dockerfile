@@ -39,7 +39,10 @@ RUN pecl install mongodb \
 RUN apt-get install -y libjpeg-dev
 RUN docker-php-ext-configure gd --enable-gd --with-jpeg
 RUN docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr \ 
-    && docker-php-ext-install gd pdo pdo_mysql pdo_odbc pdo_dblib curl json mysqli opcache zip
+    && docker-php-ext-install gd pdo pdo_mysql pdo_odbc pdo_dblib curl json mysqli opcache
+
+RUN docker-php-ext-configure zip
+RUN docker-php-ext-install zip intl xmlrpc soap
 
 COPY conf/php.ini /usr/local/etc/php/
 COPY conf/httpd.conf /etc/apache2/sites-available/000-default.conf

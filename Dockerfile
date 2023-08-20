@@ -3,8 +3,9 @@ FROM php:7.4-apache-buster
 RUN a2enmod rewrite headers remoteip
 
 # Install the PHP Driver for SQL Server
-RUN apt-get update -yqq \
-    && apt-get install -y apt-transport-https gnupg wget \
+RUN apt-get update -yqq 
+RUN apt-get install -y libgd3 libgd-dev
+RUN apt-get install -y apt-transport-https gnupg wget \
     libcurl4-openssl-dev libedit-dev libsqlite3-dev libssl-dev libxml2-dev zlib1g-dev libmcrypt-dev libpng-dev \
     freetds-dev freetds-bin freetds-common libdbd-freetds libsybdb5 libqt5sql5-tds libzip-dev zip unzip \
     && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so \
@@ -43,6 +44,10 @@ RUN docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr \
 
 RUN docker-php-ext-configure zip
 RUN docker-php-ext-install zip intl xmlrpc soap
+
+RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev libbz2-dev
+RUN docker-php-ext-configure gd --enable-gd --with-jpeg --with-freetype --with-jpeg 
+RUN docker-php-ext-install gd 
 
 COPY conf/php.ini /usr/local/etc/php/
 COPY conf/httpd.conf /etc/apache2/sites-available/000-default.conf

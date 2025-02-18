@@ -49,6 +49,11 @@ RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev libbz2-de
 RUN docker-php-ext-configure gd --enable-gd --with-jpeg --with-freetype --with-jpeg 
 RUN docker-php-ext-install gd 
 
+# POSTGRES
+RUN apt-get install -y libpq-dev
+RUN docker-php-ext-install pdo_pgsql pgsql
+RUN docker-php-ext-enable pdo_pgsql pgsql
+
 COPY conf/php.ini /usr/local/etc/php/
 COPY conf/httpd.conf /etc/apache2/sites-available/000-default.conf
 COPY www/ /var/www/html/
